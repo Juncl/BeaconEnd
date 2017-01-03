@@ -1,0 +1,28 @@
+<% include header %>
+
+    <div id="beaconPart">
+        <label for="code">信标编号</label>
+        <input id="beaconInput" value="1">
+        <button onclick="setBeacon()" id="beaconBtn" class="btn btn-primary">Set Beacon</button>
+    </div>
+
+    <div id="wave">
+        <button onclick='playpause()' id="btnPlay" class="btn btn-primary">声波播放/暂停</button><br>
+        <input id='freq' value='8000'>Hz 
+        <button onclick='setDetune()' id="btnSetFreq" class="btn btn-primary">频率设置</button>
+    </div>
+    
+
+    <div id="text">
+    	<p>服务器时间: <span id="Stime"></span><p>
+    	<p>本地时间: <span id="Ltime"></span><p>
+    	<p>时间差: <span id="Dtime"></span><p>
+    </div>
+
+    <div class = "central">
+        <button type = "button" onclick = "loadJSON()">Update Data </button>
+    </div>
+
+    <script src="./javascripts/dtest.js"></script>
+
+<% include footer %>

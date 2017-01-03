@@ -1,0 +1,14 @@
+<% include header %>
+
+    <div id="wave">
+        <button onclick='playpause()' class="btn btn-primary">play/pause</button><br>
+        <input id='input' value='8000'>Hz 
+        <button onclick='setDetune()' class="btn btn-primary">set</button>
+        <div id="displayTime">
+            <p>服务器时间: <span id="Stime"></span><p>
+            <p>本地时间: <span id="Ltime"></span><p>
+            <p>时间差(本地-服务器): <span id="Dtime"></span><p>
+        </div>
+    </div>
+    <script src="./javascripts/dtest.js"></script>
+<% include footer %>

@@ -1,18 +1,9 @@
 <% include header %>
-
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-
-    <form action="/upload" method="post" enctype="multipart/form-data">
-    	<label class="control-label">Select File</label>
-    	<input id="input-1" type="file" name="recfile" class="file">
-    	<input type="submit" name="submit" class="btn btn-primary">
-    </form>
-
-    <div id="wave">
-    	<button onclick='playpause()' class="btn btn-primary">play/pause</button><br>
-		<input id='input' value='8000'>cent 
-		<button onclick='setDetune()' class="btn btn-primary">set</button>
-    </div>
+    
+    <p style="text-align:center;margin-top:30px"> <a href="/dtime">信标节点</a> </p>
+    <p style="text-align:center;margin-top:30px"> <a href="/api2">信标数据</a> </p>
+    <p style="text-align:center;margin-top:30px"> <a href="/rdata">接收时间</a> </p>
+    <p style="text-align:center;margin-top:30px"> <a href="/sdata">发送时间</a> </p>
+    <p style="text-align:center;margin-top:30px"> <a href="/timediff">时间差</a> </p>
     
 <% include footer %>
