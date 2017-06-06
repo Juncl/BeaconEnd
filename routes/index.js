@@ -5,11 +5,19 @@ var router = express.Router();
 
 var data = [[],[],[]];
 var sdata = [[],[],[]];
-var rdata = [[],[],[]];
+var rdata = [[],[],[],[]];
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
 	res.render('index', { title: 'Express' });
+});
+
+router.get('/location', function(req, res, next) {
+	res.render('Location', { title: 'Express' });
+});
+
+router.get('/dw', function(req, res, next) {
+	res.sendFile(locatio);
 });
 
 router.get('/dtime', function(req, res, next) {
@@ -32,7 +40,7 @@ router.get('/dataStream', function(req, res, next) {
 });
 
 router.get('/micro', function(req, res, next) {
-	var form = fs.readFileSync('./microphone.html', {encoding: 'utf8'});
+	var form = fs.readFileSync('./location.html', {encoding: 'utf8'});
 	res.send(form);
 });
 
@@ -54,17 +62,22 @@ router.get('/api', function(req, res, next) {
 	switch(query.beaconId){
 		case '1':
 			data[0].push(time);
-			sdata[0].push(time.stime.slice(7));
+			sdata[0].push(time.stime.slice(6));
 			break;
 
 		case '2':
 			data[1].push(time);
-			sdata[1].push(time.stime.slice(7));
+			sdata[1].push(time.stime.slice(6));
 			break;
 
 		case '3':
 			data[2].push(time);
-			sdata[2].push(time.stime.slice(7));
+			sdata[2].push(time.stime.slice(6));
+			break;
+
+		case '4':
+			data[3].push(time);
+			sdata[3].push(time.stime.slice(6));
 			break;
 		default:
 			break;
@@ -81,7 +94,7 @@ router.get('/api2', function(req, res, next) {
 	var url_parts = url.parse(req.url, true);
 	var query = url_parts.query;
 	var id = query.id;
-	var time = query.time.slice(7);
+	var time = query.time.slice(6);
 
 	switch(id){
 		case '1':
@@ -95,6 +108,10 @@ router.get('/api2', function(req, res, next) {
 
 		case '3':
 			rdata[2].push(time);
+			break;
+
+		case '4':
+			rdata[3].push(time);
 			break;
 		default:
 			break;

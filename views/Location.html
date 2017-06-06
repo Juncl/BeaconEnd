@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+	<title>Location</title>
+	<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">  
+	<script src="https://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container" style="margin-top: 30px; padding-left: auto;padding-right: auto;">
+
+	
+	<div class="row">
+		<div class="col-xs-6">
+			<p align="center" style="font-weight: bold; font-size: 18px;">信号处理模块参数设置</p>
+			<div class="input-group">
+				<span class="input-group-addon">频域/时域:</span>
+				<select class="form-control" id="mode" onchange="Setup()">
+        			<option >Frequency</option>
+        			<option >TimeDomain</option>
+    			</select>
+			</div>
+			<br>
+			
+			<div class="input-group">
+				<span class="input-group-addon">滤波常数:</span>
+				<input type="text" class="form-control" id="smoothing" value="0.9" onchange="Setup()" >
+
+			</div>
+			<br>
+
+			<div class="input-group">
+				<span class="input-group-addon">窗长选择:</span>
+				<select class="form-control" id="fftSizeMode" onchange="Setup()">
+        			<option >512</option>
+        			<option >1024</option>
+        			<option >2048</option>
+    			</select>
+			</div>
+			<br>
+
+			<div class="input-group">
+				<span class="input-group-addon">最小分贝:</span>
+				<input type="text" class="form-control" value='-70' id="min" onchange="Setup()"
+				>
+				<span class="input-group-addon">db</span>
+			</div>
+			<br>
+			<div class="input-group">
+				<span class="input-group-addon">最大分贝:</span>
+				<input type="text" class="form-control" value='-30' id="max" onchange="Setup()"
+				>
+				<span class="input-group-addon">db</span>
+			</div>
+			<br>
+		
+		</div>
+
+		<!-- <div class="col-xs-4">
+			<p align="center" style="font-weight: bold; font-size: 18px;">定位信息</p>
+			<canvas id="can" style="border: 1px solid black;margin:0 auto;" width="256" height="256"></canvas>
+		</div> -->
+
+		<div class="col-xs-4">
+			<p align="center" style="font-weight: bold; font-size: 18px;">频谱图</p>
+			<canvas id="graph" style="border: 1px solid black;" width=256 height=256></canvas>
+		</div>
+
+		
+	</div>
+
+	<br>
+	<br>
+	
+
+	<div class="row">
+
+		<div class="col-xs-3">
+			<p align="center" style="font-weight: bold; font-size: 18px;">信标频率配置</p>
+			<div class="input-group">
+				<span class="input-group-addon">信标选择</span>
+				<select  id="beaconSelect" class="form-control">
+					<option value="1">信标1</option>
+					<option value="2">信标2</option>
+					<option value="3">信标3</option>
+					<option value="4">信标4</option>
+				</select>
+			</div>
+			<br>
+
+			<div class="input-group">
+				<span class="input-group-addon">频率1:</span>
+				<input type="text" class="form-control" placeholder="设置 频率1..." id="f1">
+				<span class="input-group-addon">KHz</span>
+			</div>
+			<br>
+
+			<div class="input-group">
+				<span class="input-group-addon">频率2:</span>
+				<input type="text" class="form-control" placeholder="设置 频率2..." id="f2">
+				<span class="input-group-addon">KHz</span>
+			</div>
+			<br>
+
+			<button type="button" class="btn btn-primary btn-lg " id="setFreq">配置频率</button>
+    		<br>
+
+		</div>
+
+		<div class="col-xs-9" style="font-size: 16px; text-align: center;">
+			<table class="table" id="tb">
+  				
+  				<thead>
+    				<tr align="center">
+      					<th>信标编号</th>
+      					<th>f1/KHz</th>
+      					<th>f2/KHz</th>
+      					<th>接收时刻1</th>
+      					<th>接收时刻2</th>
+      					<th>接收时刻3</th>
+      					<th>接收时刻4</th>
+      					<th>接收时刻5</th>
+      					<th><p style="font-style: italic;">t<sub>i,1</sub></p></th>	
+    				</tr>
+  				</thead>
+  				<tbody>
+    				<tr>
+      					<td>1</td>
+      					<td>4.5</td>
+      					<td>0</td>
+      					<td><span> </span></td>
+      					<td><span> </span></td>
+      					<td><span> </span></td>
+      					<td><span> </span></td>
+      					<td><span> </span></td>
+      					<td>0</td>
+    				</tr>
+
+    				<tr>
+      					<td>2</td>
+      					<td>5</td>
+      					<td>0</td>
+      					<td><span> </span></td>
+      					<td><span> </span></td>
+      					<td><span> </span></td>
+      					<td><span> </span></td>
+      					<td><span> </span></td>
+      					<td> <span> </span> </td>
+    				</tr>
+
+    				<tr>
+      					<td>3</td>
+      					<td>5.5</td>
+      					<td>0</td>
+      					<td><span> </span></td>
+      					<td><span> </span></td>
+      					<td><span> </span></td>
+      					<td><span> </span></td>
+      					<td><span> </span></td>
+      					<td> <span> </span> </td>
+    				</tr>
+
+    				<tr>
+      					<td>4</td>
+      					<td>6</td>
+      					<td>0</td>
+      					<td><span> </span></td>
+      					<td><span> </span></td>
+      					<td><span> </span></td>
+      					<td><span> </span></td>
+      					<td><span> </span></td>
+      					<td> <span> </span> </td>
+    				</tr>
+    		
+  				</tbody>
+			</table>
+		</div>
+	</div>
+	<br>
+	<hr>
+	<br>
+
+	<div class="row">
+		<div class="col-xs-3">
+			<p align="center" style="font-weight: bold; font-size: 18px;">信标坐标配置</p>
+			<div class="input-group">
+				<span class="input-group-addon">X:</span>
+				<input type="text" class="form-control" placeholder="设置 x 轴坐标..." id="x">
+				<span class="input-group-addon">cm</span>
+			</div>
+			<br>
+
+			<div class="input-group">
+				<span class="input-group-addon">Y:</span>
+				<input type="text" class="form-control" placeholder="设置 y 轴坐标..." id="y">
+				<span class="input-group-addon">cm</span>
+			</div>
+			<br>
+
+			<div class="input-group">
+				<span class="input-group-addon">Z:</span>
+				<input type="text" class="form-control" placeholder="设置 z 轴坐标..." id="z">
+				<span class="input-group-addon">cm</span>
+			</div>
+			<br>
+
+	    	<button type="button" class="btn btn-primary btn-lg " id="setXYZ">配置坐标</button>
+		</div>
+
+		<div class="col-xs-5" style="font-size: 16px; text-align: center;">
+			<table class="table" id="tbXYZ">
+  				
+  				<thead>
+    				<tr align="center">
+      					<th>信标编号</th>
+      					<th>x/cm</th>
+      					<th>y/cm</th>
+      					<th>z/cm</th>
+      					
+      						
+    				</tr>
+  				</thead>
+  				<tbody>
+    				<tr>
+      					<td>1</td>
+      					<td><span> </span></td>
+      					<td><span> </span></td>
+      					<td><span> </span></td>
+      					
+    				</tr>
+
+    				<tr>
+      					<td>2</td>
+      					<td><span> </span></td>
+      					<td><span> </span></td>
+      					<td><span> </span></td>
+      					
+    				</tr>
+
+    				<tr>
+      					<td>3</td>
+      					<td><span> </span></td>
+      					<td><span> </span></td>
+      					<td><span> </span></td>
+    				</tr>
+
+    				<tr>
+      					<td>4</td>
+      					<td><span> </span></td>
+      					<td><span> </span></td>
+      					<td><span> </span></td>
+    				</tr>
+    		
+  				</tbody>
+			</table>
+		</div>
+		
+		
+	</div>
+
+
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+
+	
+</div>
+
+	<script type="text/javascript">
+		jQuery(function(){
+			
+    				
+    				
+
+    		$("#setFreq").click(function(event) {
+    			
+
+    			var beaconSelect = document.getElementById('beaconSelect').value,
+    				f1 = document.getElementById('f1').value,
+    				f2 = document.getElementById('f2').value;
+
+    			
+    			if(f1 && f2){
+    				
+    				getTableCell('tb', beaconSelect, 1).innerHTML = f1;
+    				getTableCell('tb', beaconSelect, 2).innerHTML = f2;
+    				
+    			}else {
+    				alert("请输入信标频率");
+    			}
+    			
+
+    		});
+
+    		$('#setXYZ').click(function(event) {
+    			/* Act on the event */
+    			var beaconSelect = document.getElementById('beaconSelect').value,
+    				x = document.getElementById('x').value,
+    				y = document.getElementById('y').value,
+    				z = document.getElementById('z').value;
+
+    			if(x && y && z){
+
+    				getTableCell('tbXYZ', beaconSelect, 1).innerHTML = x;
+    				getTableCell('tbXYZ', beaconSelect, 2).innerHTML = y;
+    				getTableCell('tbXYZ', beaconSelect, 3).innerHTML = z;
+
+    			}else{
+    				alert("请输入信标坐标");
+    			}
+    		});
+
+		});
+
+		function getTableCell(tb, row, cell){
+			return document.getElementById(tb).rows[row].cells[cell];
+		}
+
+	</script>
+	<script>
+
+    navigator.getUserMedia = (navigator.getUserMedia ||
+                            navigator.webkitGetUserMedia ||
+                            navigator.mozGetUserMedia ||
+                            navigator.msGetUserMedia);
+
+    var nowTime = new Date();
+    var audioctx = new (window.AudioContext || window.webkitAudioContext)();
+    var drawVisual;
+
+    var buffer = null;
+
+
+
+
+    var mode = 0;
+    var fileMode = 0;
+
+    var fftSizeMode = 1;
+    var src = null;
+    var stream;
+    var analyser = audioctx.createAnalyser();
+    analyser.minDecibels = -50;
+    analyser.maxDecibels = -10;
+    analyser.fftSize = 512;
+
+    var distortion = audioctx.createWaveShaper();
+    var gainNode = audioctx.createGain();
+    var biquadFilter = audioctx.createBiquadFilter();
+    biquadFilter.type = "highpass"; 
+    biquadFilter.frequency.value = 10000;
+
+
+    var convolver = audioctx.createConvolver();
+
+    document.getElementById("min").value = analyser.minDecibels;
+    document.getElementById("max").value = analyser.maxDecibels;
+
+    var ctx = document.getElementById("graph").getContext("2d");
+    var peakValue = document.getElementById("peakValue");
+    var gradbase = ctx.createLinearGradient(0, 0, 0, 256);
+    gradbase.addColorStop(0, "rgb(255, 255, 255)");
+    gradbase.addColorStop(1, "rgb(255, 255, 255)");
+    var gradline = [];
+    for(var i = 0; i < 256; ++i) {
+      gradline[i] = ctx.createLinearGradient(0, 256 - i, 0, 256);
+      var n = (i & 64) * 2;
+      gradline[i].addColorStop(0, "rgb(255,0,0)");
+      gradline[i].addColorStop(1, "rgb(255," + i + ",0)");
+    }
+
+    if (navigator.getUserMedia) {
+       console.log('getUserMedia supported.');
+       navigator.getUserMedia (
+          // constraints - only audio needed for this app
+          {
+             audio: true
+          },
+
+          // Success callback
+          function(stream) {
+             src = audioctx.createMediaStreamSource(stream);
+             src.connect(analyser);
+             analyser.connect(distortion);
+             distortion.connect(biquadFilter);
+             biquadFilter.connect(convolver);
+             convolver.connect(gainNode);
+             gainNode.connect(audioctx.destination);
+
+             DrawGraph();
+
+          },
+
+          // Error callback
+          function(err) {
+             console.log('The following gUM error occured: ' + err);
+          }
+       );
+    } else {
+       console.log('getUserMedia not supported on your browser!');
+    }
+
+    function Stop() {
+      if(src) src.stop(0);
+      src = null;
+    }
+
+    function Play() {
+      if(src === null) {
+        src = audioctx.createBufferSource();
+        src.buffer = buffer;
+        src.loop = false;
+        src.connect(audioctx.destination);
+        src.connect(analyser);
+        src.start(0);
+      }
+    }
+
+    function Setup() {
+      console.log("setup");
+      mode = document.getElementById("mode").selectedIndex;
+      // fileMode = document.getElementById("fileMode").selectedIndex;
+      fftSizeMode = document.getElementById("fftSizeMode").selectedIndex;
+      
+      analyser.fftSize = 512;
+      analyser.minDecibels = parseFloat(document.getElementById("min").value);
+      analyser.maxDecibels = parseFloat(document.getElementById("max").value);
+      analyser.smoothingTimeConstant = parseFloat(document.getElementById("smoothing").value);
+    }
+
+
+
+
+    var flag4 = 0;
+    var flag5 = 0;
+    var flag6 = 0;
+    var flag7 = 0;
+
+    var b1Time = [],
+      b2Time = [],
+      b3Time = [],
+      b4Time = [];
+
+    // var btnPlay = document.getElementById("btnPlay");
+
+
+
+
+    function DrawGraph() {
+      // drawVisual = requestAnimationFrame(DrawGraph);
+
+
+      // ctx.fillStyle = gradbase;
+      ctx.fillStyle = 'white';
+      ctx.fillRect(0, 0, 256, 256);
+      
+      
+      var data = new Uint8Array(256);
+      
+      
+      analyser.getByteFrequencyData(data); //Spectrum Data
+
+      var b1f1 = parseFloat(document.getElementById('tb').rows[1].cells[1].innerHTML),
+        b2f1 = parseFloat(document.getElementById('tb').rows[2].cells[1].innerHTML),
+        b3f1 = parseFloat(document.getElementById('tb').rows[3].cells[1].innerHTML),
+        b4f1 = parseFloat(document.getElementById('tb').rows[4].cells[1].innerHTML);
+
+
+      
+
+      var b1f1Value = getPosValue(b1f1, data), // 幅值
+        b2f1Value = getPosValue(b2f1, data), // 幅值
+        b3f1Value = getPosValue(b3f1, data), // 幅值
+        b4f1Value = getPosValue(b4f1, data); // 幅值
+      
+
+      
+
+
+      if(b1f1Value == '0'){
+        flag4 = 1;
+      }
+      if(flag4 && b1f1Value != '0'){
+        flag4 = 0;
+        b1Time = pushValue(new Date().getTime().toString().slice(6), b1Time) ;
+        loadJSON(1, new Date().getTime());
+      }
+
+      if(b2f1Value == '0'){
+        flag5 = 1;
+      }
+      if(flag5 && b2f1Value != '0'){
+        flag5 = 0;
+        b2Time = pushValue(new Date().getTime().toString().slice(6), b2Time) ;
+        loadJSON(2, new Date().getTime());
+      }
+
+      if(b3f1Value == '0'){
+        flag6 = 1;
+      }
+      if(flag6 && b3f1Value != '0'){
+        flag6 = 0;
+        b3Time = pushValue(new Date().getTime().toString().slice(6), b3Time) ;
+        loadJSON(3, new Date().getTime());
+      }
+
+      if(b4f1Value == '0'){
+        flag7 = 1;
+      }
+      if(flag7 && b4f1Value != '0'){
+        flag7 = 0;
+        b4Time = pushValue(new Date().getTime().toString().slice(6), b4Time) ;
+        loadJSON(4, new Date().getTime());
+      }
+
+      
+      displayArray(1, b1Time);
+      displayArray(2, b2Time);
+      displayArray(3, b3Time);
+      displayArray(4, b4Time);
+      
+      for(var i = 0; i < 256; ++i) {
+        
+        if(i>40 && data[i] > 0){
+          console.log((i) +" "+data[i]);
+          // console.log((i/10.667) +" "+data[i]);
+        }
+        
+        ctx.fillStyle = gradline[data[i]];
+        ctx.fillRect(i, 256 - data[i], 1, data[i]);
+      }
+
+    }
+
+    Setup();         
+    setInterval(function(){
+      DrawGraph();
+    }, 0);
+
+
+
+
+    // 找出峰值的具体位置
+    function getPeakPos(arr){
+      var pos = [];
+      var n = [];
+
+      for(var i = 1; i < arr.length; i++){
+        if(arr[i] >= arr[i-1] && arr[i] >= arr[i+1] && arr[i] != 0
+          && arr[i] >= arr[i-2] && arr[i] >= arr[i+2] ){      
+          pos.push(i); 
+        }
+      }
+
+      for(var i = 0; i < pos.length; i++){
+        var count = 0;
+
+        while((pos[i]+1) == pos[i+1]){
+          i++;
+          count++;
+        }
+        if(count != 0){
+          n.push(Math.floor((2*pos[i]-count)/2));
+        }
+        else n.push(pos[i]);
+      }
+      if(n.length > 0 && n[0] == 2){
+        n.shift();
+      }
+      return n;
+    }
+
+    //找到对应点的值
+    function getPosValue(pos, arr){
+      // pos = pos * 2;
+      var n = Math.floor(pos * 11.65);
+      if(n > arr.length - 2 || n < 2){
+        return 0;
+      }else return ((arr[n-1]+arr[n]+arr[n+1])/3);
+    }
+
+    //不同size下的不同频率
+    function getFrequencyValue(size, value){
+      var frequency = 0;
+      switch(size){
+        case 0: 
+          frequency = Math.floor(value/10);
+          break;
+        case 1:
+          frequency = Math.floor(value/20);
+          break;
+        case 2:
+          frequency = Math.floor(value/80);
+          break;
+      }
+
+      return frequency;
+    }
+
+    // 将非0元素添加进数组 并保持数组长度为5
+    function pushValue(n, arr){
+      var b = [];
+      
+      if(n){
+        if(arr.length >= 5){
+          b = arr.slice(1, 5);
+          arr = b;
+        }
+        arr.push(n);
+      }
+      
+
+      return arr;
+    }
+
+    function keepArrayLength(length, arr){
+      var b = [];
+      if(arr.length >= length){}
+    }
+
+    // 将数组各个元素显示在元素上
+    function displayArray(beaconNum, arr){
+      for(var i = 0; i < arr.length; i++){
+        document.getElementById('tb').rows[beaconNum].cells[i+3].innerHTML = arr[i];
+      }
+    }
+
+
+
+
+    function loadJSON(id, time){
+        // var data_file = "http://www.tutorialspoint.com/json/data.json";
+        var data_file = "http://172.18.216.57:3000/api2?id="+id+"&time="+time;
+                
+        var http_request = new XMLHttpRequest();
+        try{
+            // Opera 8.0+, Firefox, Chrome, Safari
+            http_request = new XMLHttpRequest();
+            }catch (e){
+                // Internet Explorer Browsers
+                try{
+                    http_request = new ActiveXObject("Msxml2.XMLHTTP");
+              
+                }catch (e) {
+            
+                    try{
+                        http_request = new ActiveXObject("Microsoft.XMLHTTP");
+                    }catch (e){
+                        // Something went wrong
+                        alert("Your browser broke!");
+                        return false;
+                    }
+              
+                }
+            }
+          
+            http_request.onreadystatechange = function(){
+          
+                if (http_request.readyState == 4  ){
+                    // Javascript function JSON.parse to parse JSON data
+                    var jsonObj = JSON.parse(http_request.responseText);
+
+                    console.log(jsonObj[0]);
+
+                }
+            }
+        http_request.open("GET", data_file, true);
+            http_request.send();
+    }
+
+
+
+
+
+
+   
+  </script>
+
+</body>
+</html>

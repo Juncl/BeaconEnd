@@ -40,7 +40,7 @@ function loadJSON(){
         var beaconId = document.getElementById("beaconInput").value;
         var freq = document.getElementById("freq").value;
 
-        var data_file = "http://172.18.216.95:3000/api?dtime="+new Date().getTime()
+        var data_file = "http://172.18.216.73:3000/api?dtime="+new Date().getTime()
             +"&beaconId="+beaconId+"&freq="+freq;
 
         console.log(new Date().getTime());
